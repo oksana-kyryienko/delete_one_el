@@ -63,6 +63,7 @@ root.querySelector(".add").addEventListener("click", () => {
     li.appendChild(h3);
     itemsList.appendChild(li);
   } else {
+    newTodoField.value = "";
    
     list.set(firstPart, secondPart);
     const newItem = document.createElement("li");
