@@ -1,9 +1,7 @@
 const root = document.querySelector(".main");
 
 const newTodoField = root.querySelector(".new-todo");
-
 const itemsList = root.querySelector(".todo-list");
-
 let list = new Map([]);
 
 let li = document.createElement("li");
@@ -33,6 +31,29 @@ root.querySelector(".show-xml").addEventListener("click", (event) => {
   const xml = itemsList.innerHTML;
   alert(xml);
 });
+
+function createNewItem(item) {
+  const newItem = document.createElement("li");
+  newItem.classList.add("todo-item");
+  const button = document.createElement("button");
+  button.classList.add("destroy");
+  newItem.textContent = `${item[0]} = ${item[1]}`;
+  newItem.appendChild(button);
+  itemsList.appendChild(newItem);
+}
+
+function clearList() {
+  while (itemsList.firstChild) {
+    itemsList.removeChild(itemsList.firstChild);
+  }
+}
+
+function displayList() {
+  clearList();
+  list.forEach((value, key) => {
+    createNewItem([key, value]);
+  });
+}
 
 root.querySelector(".add").addEventListener("click", () => {
   let valueFromInput = newTodoField.value;
@@ -64,39 +85,33 @@ root.querySelector(".add").addEventListener("click", () => {
     itemsList.appendChild(li);
   } else {
     newTodoField.value = "";
-   
     list.set(firstPart, secondPart);
-    const newItem = document.createElement("li");
-    newItem.classList.add("todo-item");
-    const button = document.createElement("button");
-    button.classList.add("destroy");
-    newItem.textContent = `${firstPart} = ${secondPart}`;
-    newItem.appendChild(button);
-
-    itemsList.appendChild(newItem);
+    createNewItem([firstPart, secondPart]);
   }
-
-  list.set(firstPart, secondPart);
 });
 
 itemsList.addEventListener("click", (event) => {
   if (!event.target.matches(".destroy")) {
     return;
   }
-
-  event.target.closest(".todo-item").remove();
+  const item = event.target.closest(".todo-item");
+  const key = item.textContent.split("=")[0].trim();
+  list.delete(key);
+  item.remove();
 });
 
 root.querySelector(".sort-name").addEventListener("click", () => {
   const sortedItems = [...list].sort((a, b) => a[0].localeCompare(b[0]));
-  itemsList.innerHTML = "";
-  sortedItems.forEach(([key, value]) => {
-    const newItem = document.createElement("li");
-    newItem.classList.add("todo-item");
-    const button = document.createElement("button");
-    button.classList.add("destroy");
-    newItem.textContent = `${key} = ${value}`;
-    newItem.appendChild(button);
-    itemsList.appendChild(newItem);
+  clearList();
+  sortedItems.forEach((item) => {
+    createNewItem(item);
+  });
+});
+
+root.querySelector(".sort-value").addEventListener("click", () => {
+  const sortedItems = [...list].sort((a, b) => a[1].localeCompare(b[1]));
+  clearList();
+  sortedItems.forEach((item) => {
+    createNewItem(item);
   });
 });
