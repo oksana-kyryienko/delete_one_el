@@ -86,3 +86,17 @@ itemsList.addEventListener("click", (event) => {
 
   event.target.closest(".todo-item").remove();
 });
+
+root.querySelector(".sort-name").addEventListener("click", () => {
+  const sortedItems = [...list].sort((a, b) => a[0].localeCompare(b[0]));
+  itemsList.innerHTML = "";
+  sortedItems.forEach(([key, value]) => {
+    const newItem = document.createElement("li");
+    newItem.classList.add("todo-item");
+    const button = document.createElement("button");
+    button.classList.add("destroy");
+    newItem.textContent = `${key} = ${value}`;
+    newItem.appendChild(button);
+    itemsList.appendChild(newItem);
+  });
+});
